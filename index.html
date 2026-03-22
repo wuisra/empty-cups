@@ -4408,18 +4408,23 @@ root.render(/*#__PURE__*/React.createElement(App, null));
     // 等 React 渲染完成後移除啟動遮罩
     const _splash = document.getElementById('splash-overlay');
     if (_splash) {
-      // MutationObserver 偵測 #root 有子節點（React 已掛載）
-      const _obs = new MutationObserver(() => {
-        const root = document.getElementById('root');
-        if (root && root.firstChild) {
-          _obs.disconnect();
-          _splash.style.opacity = '0';
-          setTimeout(() => _splash.remove(), 320);
-        }
-      });
-      _obs.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
-      // 最長等 4 秒保底移除
-      setTimeout(() => { _splash.style.opacity = '0'; setTimeout(() => _splash.remove(), 320); }, 4000);
+      const _hideSplash = () => {
+        _splash.style.opacity = '0';
+        setTimeout(() => _splash.remove(), 320);
+      };
+      const _root = document.getElementById('root');
+      // 先檢查一次（React 可能已掛載）
+      if (_root && _root.firstChild) {
+        _hideSplash();
+      } else {
+        // 否則用 observer 等待
+        const _obs = new MutationObserver(() => {
+          if (_root && _root.firstChild) { _obs.disconnect(); _hideSplash(); }
+        });
+        _obs.observe(_root || document.body, { childList: true, subtree: true });
+        // 保底 2 秒（縮短）
+        setTimeout(() => { _obs.disconnect(); _hideSplash(); }, 2000);
+      }
     }
 
     if ('serviceWorker' in navigator) {
