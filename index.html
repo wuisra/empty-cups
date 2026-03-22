@@ -20,7 +20,7 @@
   <script src="elements.cardmeister.full.js"></script>
   <!-- 引入 React 與 ReactDOM -->
   <script src="react.production.min.js"></script>
-  <script src="react-dom.production.min.js"></script>
+  <script src="react-dom.production.min.js"></script>	
 
   <style>
     :root {
@@ -129,6 +129,14 @@
   </style>
 </head>
 <body>
+  <div id="splash-overlay" style="
+    position:fixed; inset:0; z-index:99999;
+    background:#022c22;
+    display:flex; align-items:center; justify-content:center;
+    transition: opacity 0.3s ease;
+  ">
+    <img src="icons/icon-192.png" style="width:96px;height:96px;border-radius:22px;opacity:0.9;" alt="">
+  </div>
   <div id="root"></div>
 
   <script>
@@ -4397,6 +4405,23 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(/*#__PURE__*/React.createElement(App, null));
   </script>
   <script>
+    // 等 React 渲染完成後移除啟動遮罩
+    const _splash = document.getElementById('splash-overlay');
+    if (_splash) {
+      // MutationObserver 偵測 #root 有子節點（React 已掛載）
+      const _obs = new MutationObserver(() => {
+        const root = document.getElementById('root');
+        if (root && root.firstChild) {
+          _obs.disconnect();
+          _splash.style.opacity = '0';
+          setTimeout(() => _splash.remove(), 320);
+        }
+      });
+      _obs.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
+      // 最長等 4 秒保底移除
+      setTimeout(() => { _splash.style.opacity = '0'; setTimeout(() => _splash.remove(), 320); }, 4000);
+    }
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
