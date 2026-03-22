@@ -1,0 +1,27 @@
+{
+  "name": "Empty Cups — 傾空杯子",
+  "short_name": "Empty Cups",
+  "description": "A solitaire card game. Clear all hearts from the board.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#022c22",
+  "theme_color": "#022c22",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["games", "entertainment"]
+}
